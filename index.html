@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>VUE练习-过渡与组件结合</title>
+	
+  
+	<style>
+	*{
+		margin: 0;padding: 0;
+	}
+	.bounce-enter-active{
+		transition: opacity .5s;
+	}
+	.bounce-leave-active{
+		transition: opacity .5s;
+	}
+	.bounce-enter, .bounce-leave-active{
+		opacity: 0;
+	}
+	.modal{
+		height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.79);
+	}
+	.mask{
+	    width: 240px;
+    	height: 110px;
+    	background-color: #eae6e6;
+    	border-radius: 4px;
+    	padding: 17px;
+    	transition: all 0.3s ease;	/* 设置scale的时间过渡 */
+	}
+	.footer{
+	    justify-content: space-between;
+    	display: flex;
+	}
+	.text{
+		    margin: 10px;
+	}
+	.bounce-enter .mask,
+	.bounce-leave-active .mask {
+	  	-webkit-transform: scale(1.1);
+	  	transform: scale(1.1);
+	}
+	</style>
+	
+</head>
+<body>
+	<script type="text/x-template" id="modal-tamplate">
+		<transition name="bounce">
+			<div class="modal">
+
+				<div class="mask">
+					<div class="text">
+						<slot name="header">
+							header text
+						</slot>						 
+					</div>
+
+					<div class="text">
+						 body text
+					</div>
+
+					<div class="footer text">
+						 footer text
+						 <button @click="$emit('close')">OK</button><!-- 点击触发这个close自定义事件 -->
+					</div>
+				</div>
+
+			</div>
+		</transition>
+	</script>
+	<section id="demo">
+		<button @click="show = !show">Show</button>
+		<modal v-if="show" @close="show = !show">
+			<div>这里的内容不会被渲染，要想被渲染，就得使用slot属性</div>
+			<h1 slot="header">{{message}}</h1><!-- slot插槽属性，可以替换模板中的slot标签 -->
+		</modal><!-- close为自定义事件 -->
+	</section>
+	
+	<script src="vue.js"></script>
+	
+	<script>
+		Vue.component("modal",{
+			template:'#modal-tamplate'
+			
+		})
+		var demo = new Vue({
+			el:"#demo",
+			data:{
+				show : false,
+				message:"替换内容"
+			}
+		})
+	</script>
+	
+</body>
+</html>
